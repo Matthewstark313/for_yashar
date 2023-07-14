@@ -1,0 +1,46 @@
+def save_aghahi_info(Chat_id, First_name, Last_name, Username, type, aghahi_text, call_info, price, hashtak):
+    filename = f"{Chat_id}.txt"
+    with open(filename, 'w') as f:
+        f.write(f"""
+chat_id={Chat_id} 
+name={First_name} {Last_name}
+username=@{Username}
+type={type}
+aghahi_text={aghahi_text}
+call_info={call_info}
+price={price}
+hashtak={hashtak}
+""")
+
+
+def send_info(chat_id):
+    confrim_bottun = [[InlineKeyboardButton("رد آگهی", callback_data=f"{chat_id}"),
+                       InlineKeyboardButton("تایید آگهی", callback_data=f"t{chat_id}")]]
+    cb = InlineKeyboardMarkup(confrim_bottun)
+
+    filename = f"{chat_id}.txt"
+    with open(filename, 'r') as f:
+        data = f.read()
+        lines = data.strip().split('\n')
+        info = ''
+        aghahi = ''
+        name = ''
+        Username = ''
+        for line in lines:
+            key, value = line.split('=')
+            if key == 'chat_id':
+                continue
+            elif key == 'name':
+                name = value
+            elif key == 'username':
+                var = Username == value
+            elif key == 'Chat':
+                info += f"Chat: {value}\n"
+            elif key == 'type':
+                aghahi += f"Type: {value}\n"
+            elif key == 'aghahi_text':
+                aghahi += f"Aghahi Text: {value}\n"
+            elif key == 'call_info':
+                aghahi += f"Call Info: {value}\n"
+        bot.send_message(Freelancer_Aghahi, text="Aghahi information:\n" + aghahi, reply_markup=cb)
+        bot.send_message(Freelancer_Aghahi, text="Sender information:\n" + info + name, reply_markup=cb)
